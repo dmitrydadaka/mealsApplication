@@ -1,9 +1,16 @@
 import './App.css';
+import Favorites from './components/Favorites';
+import Modal from './components/Modal';
+import Search from './components/Search';
+import Meals from './components/Meals';
 
 function App() {
   return (
     <main>
-      Meals App
+      <Search />
+      <Favorites />
+      <Meals />
+      <Modal />
     </main>
   );
 }
