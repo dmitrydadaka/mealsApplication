@@ -4,10 +4,14 @@ import { useGlobalContext } from '../context';
 
 const Meals = () => {
     //const context = useContext(AppContext);
-    const context = useGlobalContext();
-    console.log(context);
+    const { meals } = useGlobalContext();
+    console.log(meals);
     return (
-        <h1>Meals component</h1>
+    <section>
+        {
+            meals.map(singleMeal => <h4>{singleMeal.strMeal}</h4>)
+        }
+    </section>
     )
 }
 
