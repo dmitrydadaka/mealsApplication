@@ -32,7 +32,7 @@ const AppProvider = ({ children }) => {
             if (data.meals) {
                 setMeals(data.meals);
             } else {
-                setMeals([])
+                setMeals([]);
             }
         } catch (error) {
             console.log(error.response);
