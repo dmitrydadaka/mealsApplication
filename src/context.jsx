@@ -2,6 +2,16 @@ import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios'
 const AppContext = React.createContext();
 
+const getFavoritesFromLocalStorage = () => {
+    let favorites = localStorage.getItem('favorites');
+    if(favorites){
+        favorites = JSON.parse(localStorage.getItem('favorites'));
+    } else {
+        favorites = [];
+    }
+    return favorites;
+}
+
 const AppProvider = ({ children }) => {
 
     const allMealsUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s='
@@ -12,6 +22,7 @@ const AppProvider = ({ children }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState(null);
+    const [favorites, setFavorites] = useState(getFavoritesFromLocalStorage());
 
 
     const fetchMeals = async (url) => {
@@ -35,15 +46,34 @@ const AppProvider = ({ children }) => {
 
     const selectMeal = (idMeal, favoriteMeal) => {
         let meal;
-        meal = meals.find(meal => meal.idMeal === idMeal);
+        if(favoriteMeal){
+            meal = favorites.find(meal => meal.idMeal === idMeal);
+        } else{
+            meal = meals.find(meal => meal.idMeal === idMeal);
+        }
         setSelectedMeal(meal);
         setShowModal(true);
-
     }
-
 
     const closeModal = () => {
         setShowModal(false)
+    }
+
+    const addToFavorites = (idMeal) => {
+        const newFavorite = meals.find( meal => meal.idMeal === idMeal);
+        const alreadyFavorite = favorites.find( meal => meal.idMeal === newFavorite.idMeal);
+
+        if(alreadyFavorite) return;
+        const updatedFavorites = [...favorites, newFavorite];
+        setFavorites(updatedFavorites);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    }
+
+    const removeFromFavorites = (idMeal) => {
+        const updatedFavorites = favorites.filter( meal => meal.idMeal !== idMeal);
+        setFavorites(updatedFavorites);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+
     }
 
     useEffect(() => {
@@ -55,9 +85,11 @@ const AppProvider = ({ children }) => {
         fetchMeals(`${allMealsUrl}${searchTerm}`);
     }, [searchTerm]);
 
+
     return <AppContext.Provider value={{
         loading, meals, setSearchTerm, fetchRandomMeal,
-        showModal, selectMeal, selectedMeal, setSelectedMeal, closeModal
+        showModal, selectMeal, selectedMeal, setSelectedMeal, closeModal,
+        addToFavorites, removeFromFavorites, favorites
     }}>
         {children}
     </AppContext.Provider>
