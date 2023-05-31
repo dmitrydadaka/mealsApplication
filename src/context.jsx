@@ -5,7 +5,7 @@ const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
 
     const allMealsUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s=a'
-    const randomMealUrl = 'https://www.themealdb.com/api/json/v1/1/random.php';
+    //const randomMealUrl = 'https://www.themealdb.com/api/json/v1/1/random.php';
 
     const [loading, setLoading] = useState(false)
     const [meals, setMeals] = useState([])
